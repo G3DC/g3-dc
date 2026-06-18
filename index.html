@@ -1044,6 +1044,10 @@ body.dark .hl{color:var(--teal-bright)}
   .op-cap-num{font-family:var(--display);font-weight:600;font-size:clamp(40px,5.5vw,72px);color:#e8c98a;letter-spacing:-.02em;line-height:.9}
   .op-cap-unit{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.2vw,28px);color:#e8c98a}
   .op-cap-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(232,201,138,.7);width:100%;text-align:right;margin-top:2px}
+
+  /* When label is longer (IN-PROGRESS), tighten spacing and nudge down to avoid overlap */
+  .op-cap.is-inprogress{align-items:flex-end}
+  .op-cap.is-inprogress .op-cap-lbl{font-size:11px;letter-spacing:.12em;margin-top:8px}
   .op-city{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-bright)}
   /* vertical side label */
   .op-side{display:flex;align-items:center;justify-content:center}
@@ -1478,7 +1482,7 @@ body.dark .hl{color:var(--teal-bright)}
   <section class="section slab" id="operate">
     <div class="wrap">
       <span class="kicker reveal">Footprint</span>
-      <h2 class="op-head reveal d1">Four states. <span class="hl">One sovereign grid.</span></h2>
+      <h2 class="op-head reveal d1">Four states.<br><span class="hl">One sovereign grid.</span></h2>
       <p class="lede reveal d2">Built on Indian soil, close to the metros that need the compute. Each site sits under its own state&rsquo;s jurisdiction &mdash; your data never leaves home.</p>
 
       <div class="op-stage reveal d2">
@@ -2343,6 +2347,13 @@ body.dark .hl{color:var(--teal-bright)}
       document.getElementById('opState').textContent=reg.state;
       document.getElementById('opCity').textContent=reg.city;
       /* opCap is static markup (75 MW planned) — no textContent needed */
+      var opCapEl = document.getElementById('opCap');
+      var capLbl = opCapEl && opCapEl.querySelector('.op-cap-lbl');
+      if(capLbl){
+        if(reg.k === 'KA') capLbl.textContent = 'IN-PROGRESS';
+        else capLbl.textContent = 'planned';
+      }
+      if(opCapEl){ opCapEl.classList.toggle('is-inprogress', reg.k === 'KA'); }
       document.getElementById('opRegionLabel').textContent=reg.side;
       var g=document.getElementById('opGreet');
       g.classList.remove('in'); g.textContent=reg.greet;
