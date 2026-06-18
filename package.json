@@ -1,0 +1,25 @@
+{
+  "name": "g3-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "email:preview": "bun run scripts/preview-emails.ts",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/vercel": "^10.0.8",
+    "astro": "^6.4.8",
+    "nodemailer": "^9.0.1",
+    "postgres": "^3.4.9"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/nodemailer": "^8.0.1",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "remoteName": "origin",
+  "projects": [
+    {
+      "id": "prj_VJdi9QZ9reZbG1MDTmMPiCcSVymR",
+      "name": "g3-dc",
+      "directory": ".",
+      "orgId": "team_VVl8OSgHQtu9ZP2ieN1S87Wf"
+    }
+  ]
+}
