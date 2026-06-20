@@ -397,12 +397,9 @@ body.dark .hl{color:var(--teal-bright)}
     line-height:1;transition:color .25s var(--ease), background .25s var(--ease);white-space:nowrap;}
   .nav-links a:hover{color:var(--ink);background:rgba(6,26,25,.05)}
   body.dark .nav-links a:hover{background:rgba(180,220,212,.08)}
-  .nav-links a.active{color:var(--teal)}
-  body.dark .nav-links a.active{color:var(--teal-bright)}
-  .nav-cta{font-size:13px;font-weight:600;color:#fff;background:var(--teal);
-    padding:9px 16px;border-radius:999px;line-height:1;white-space:nowrap;
-    transition:background .25s var(--ease), transform .25s var(--ease);}
-  .nav-cta:hover{background:var(--teal-bright);transform:translateY(-1px)}
+  .nav-links a.active{color:#fff;background:var(--teal);font-weight:600}
+  .nav-links a.active:hover{color:#fff;background:var(--teal-bright)}
+  body.dark .nav-links a.active{color:#061A19;background:var(--teal-bright)}
   .nav-toggle{display:none}
   .nav-burst{display:none}
   @media(max-width:760px){
@@ -412,7 +409,6 @@ body.dark .hl{color:var(--teal-bright)}
     .nav-links{display:none}
     .nav-brand{padding:8px 6px 8px 9px;margin:0}
     .nav-brand::after{display:none}
-    .nav-cta{display:none}
     .nav-toggle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;
       border:0;border-radius:12px;background:rgba(6,26,25,.07);color:var(--ink);cursor:pointer;position:relative}
     body.dark .nav-toggle{background:rgba(180,220,212,.09);color:var(--ink)}
@@ -436,8 +432,8 @@ body.dark .hl{color:var(--teal-bright)}
       border-radius:11px;white-space:nowrap;line-height:1}
     .nav-burst a:hover{background:rgba(6,26,25,.06);color:var(--ink)}
     body.dark .nav-burst a:hover{background:rgba(180,220,212,.08)}
-    .nav-burst a.active{color:var(--teal)}
-    body.dark .nav-burst a.active{color:var(--teal-bright)}
+    .nav-burst a.active{color:#fff;background:var(--teal)}
+    body.dark .nav-burst a.active{color:#061A19;background:var(--teal-bright)}
   }
   @media(prefers-reduced-motion:reduce){ .nav{transition:opacity .3s linear} }
 
@@ -1363,6 +1359,7 @@ body.dark .hl{color:var(--teal-bright)}
       <a href="#products">Platform</a>
       <a href="#built-for">Operators</a>
       <a href="#compare">Why G3</a>
+      <a href="#lets-talk">Let&rsquo;s talk</a>
     </div>
     <div class="nav-burst" id="navMenu" aria-hidden="false">
       <a href="#section-2">Architecture</a>
@@ -1371,7 +1368,6 @@ body.dark .hl{color:var(--teal-bright)}
       <a href="#compare">Why G3</a>
       <a href="#lets-talk">Let&rsquo;s talk</a>
     </div>
-    <a href="#lets-talk" class="nav-cta">Let’s talk</a>
   </nav>
 
 
@@ -2235,8 +2231,8 @@ body.dark .hl{color:var(--teal-bright)}
     document.addEventListener('keydown', function(e){ if(e.key==='Escape') setMenu(false); });
   }
 
-  /* scrollspy: highlight the active nav link */
-  var spyTargets=['stats','section-2','foundation','blueprint','products','built-for','compare','lets-talk']
+  /* scrollspy: move the teal pill to the section currently in view */
+  var spyTargets=['section-2','products','built-for','compare','lets-talk']
     .map(function(id){ return document.getElementById(id); }).filter(Boolean);
   if(spyTargets.length){
     var sets=[document.querySelector('.nav-links'),document.querySelector('.nav-burst')].filter(Boolean);
@@ -2244,10 +2240,19 @@ body.dark .hl{color:var(--teal-bright)}
       sets.forEach(function(s){ s.querySelectorAll('a').forEach(function(a){
         a.classList.toggle('active', a.getAttribute('href')==='#'+id); }); });
     };
-    var spyIO=new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
-    },{threshold:.5, rootMargin:'-20% 0px -55% 0px'});
-    spyTargets.forEach(function(t){ spyIO.observe(t); });
+    var currentNav='';
+    function updateNavActive(){
+      var marker=(innerHeight||document.documentElement.clientHeight)*0.38;
+      var active=spyTargets[0].id;
+      spyTargets.forEach(function(t){
+        var r=t.getBoundingClientRect();
+        if(r.top<=marker) active=t.id;
+      });
+      if(active!==currentNav){ currentNav=active; setActive(active); }
+    }
+    addEventListener('scroll', updateNavActive, {passive:true});
+    addEventListener('resize', updateNavActive);
+    updateNavActive();
   }
 
   /* The Blueprint: fill the progression bar + light steps as it scrolls into view */
