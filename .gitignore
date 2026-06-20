@@ -23,6 +23,8 @@ pnpm-debug.log*
 .DS_Store
 
 # vercel build artifacts (keep .vercel/repo.json link metadata)
+.vercel/node/
+.vercel/project.json
 .vercel/output/
 .vercel/cache/
 
