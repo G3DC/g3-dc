@@ -883,19 +883,36 @@ import '../styles/global.css';
     },{threshold:0, rootMargin:'-72% 0px 0px 0px'}).observe(heroTrack);
   }
 
-  /* scrollspy: highlight the active nav link */
-  var spyTargets=['stats','section-2','foundation','blueprint','products','built-for','compare','lets-talk']
-    .map(function(id){ return document.getElementById(id); }).filter(Boolean);
-  if(spyTargets.length){
-    var sets=[document.querySelector('.nav-links'),document.querySelector('.nav-burst')].filter(Boolean);
-    var setActive=function(id){
-      sets.forEach(function(s){ s.querySelectorAll('a').forEach(function(a){
-        a.classList.toggle('active', a.getAttribute('href')==='#'+id); }); });
+  /* scrollspy: move the teal highlight to the nav link governing the section in view.
+     IntersectionObserver with a high threshold can't fire on full-height slabs (half a
+     section never fits the trigger band), so we scan on scroll instead: the active section
+     is the last one whose top has crossed a line ~30% down the viewport. In-between sections
+     (foundation, blueprint) map to their preceding nav link so the accent never goes dark
+     mid-page; the hero/stats top and the lets-talk CTA map to no highlight. */
+  var spyMap={stats:'','section-2':'#section-2',foundation:'#section-2',blueprint:'#section-2',
+    products:'#products','built-for':'#built-for',compare:'#compare','lets-talk':'#lets-talk'};
+  var spyOrder=Object.keys(spyMap);
+  var spyEls=spyOrder.map(function(id){ return document.getElementById(id); });
+  var spyLinks=[].slice.call(document.querySelectorAll('.nav-links a, .nav-burst a, .nav-cta'));
+  if(spyLinks.length){
+    var spyApply=function(href){
+      spyLinks.forEach(function(a){
+        a.classList.toggle('active', href!=='' && a.getAttribute('href')===href); });
     };
-    var spyIO=new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting) setActive(e.target.id); });
-    },{threshold:.5, rootMargin:'-20% 0px -55% 0px'});
-    spyTargets.forEach(function(t){ spyIO.observe(t); });
+    var spyCur=null;
+    var spyScan=function(){
+      var line=(innerHeight||document.documentElement.clientHeight)*0.30;
+      var pick='';
+      for(var i=0;i<spyEls.length;i++){
+        var el=spyEls[i];
+        if(el && el.getBoundingClientRect().top<=line) pick=spyOrder[i];
+      }
+      var href=spyMap[pick]||'';
+      if(href!==spyCur){ spyCur=href; spyApply(href); }
+    };
+    addEventListener('scroll',spyScan,{passive:true});
+    addEventListener('resize',spyScan);
+    spyScan();
   }
 
   /* The Blueprint: fill the progression bar + light steps as it scrolls into view */
